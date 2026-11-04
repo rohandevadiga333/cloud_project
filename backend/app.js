@@ -50,7 +50,7 @@ app.use(cookieParser());
 // ─── Serve frontend static files ──────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'frontend')));
 // ─── API rate limiting ────────────────────────────────────────────────────────
-app.use('/api', apiLimiter);
+// app.use('/api', apiLimiter);
 
 // ─── API routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth',    authRoutes);
