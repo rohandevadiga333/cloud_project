@@ -55,6 +55,7 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 // ─── API routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth',    authRoutes);
 app.use('/api/student', studentRoutes);
+
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/admin',   adminRoutes);
 
