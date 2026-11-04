@@ -1,7 +1,7 @@
 // backend/controllers/adminController.js
 // Admin management API endpoints
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const db     = require('../config/db');
 const { calculateCGPA } = require('../services/calculationService');
 
