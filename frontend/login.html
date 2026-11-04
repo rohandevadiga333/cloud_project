@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – Student Result Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; background: #0f2444; }
+
+    /* ─── Left panel ─────────────────────────────────── */
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(145deg, #091a33 0%, #0f2444 50%, #1a3a6b 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px; position: relative; overflow: hidden;
+    }
+    .left-panel::before {
+      content:''; position:absolute; width:500px; height:500px; border-radius:50%;
+      background:radial-gradient(circle,rgba(59,158,255,.15) 0%,transparent 65%);
+      top:-100px; right:-100px; pointer-events:none;
+    }
+    .dots { position:absolute; inset:0;
+      background-image:radial-gradient(rgba(255,255,255,.06) 1.5px,transparent 1.5px);
+      background-size:28px 28px; pointer-events:none; }
+    .brand { position:relative; z-index:1; max-width:400px; }
+    .brand-logo {
+      width:76px; height:76px; background:linear-gradient(135deg,#2c7be5,#3b9eff);
+      border-radius:18px; display:flex; align-items:center; justify-content:center;
+      font-size:2.2rem; color:white; box-shadow:0 12px 40px rgba(44,123,229,.45);
+      margin-bottom:28px;
+    }
+    .brand h1 { font-family:'Outfit',sans-serif; font-size:2rem; font-weight:700; color:white; line-height:1.25; margin-bottom:14px; }
+    .brand p  { color:rgba(255,255,255,.55); font-size:.88rem; line-height:1.75; margin-bottom:32px; }
+    .feature  { display:flex; align-items:center; gap:12px; color:rgba(255,255,255,.72); font-size:.84rem; margin-bottom:14px; }
+    .feature i { color:#3b9eff; font-size:1.05rem; width:18px; }
+
+    /* ─── Right panel ────────────────────────────────── */
+    .right-panel {
+      width: 440px; background: white;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 40px; min-height: 100vh; overflow-y: auto;
+    }
+    .form-inner { width: 100%; max-width: 360px; }
+
+    /* Logo */
+    .form-logo {
+      width:64px; height:64px; background:linear-gradient(135deg,#0f2444,#2c7be5);
+      border-radius:14px; display:flex; align-items:center; justify-content:center;
+      font-size:1.8rem; color:white; margin:0 auto 16px; box-shadow:0 6px 20px rgba(15,36,68,.3);
+    }
+    .form-title { font-family:'Outfit',sans-serif; font-size:1.2rem; font-weight:700; color:#0f2444; text-align:center; }
+    .form-sub   { font-size:.78rem; color:#9ab0c8; text-align:center; margin-top:4px; margin-bottom:28px; }
+
+    /* Role tabs */
+    .role-tabs { display:flex; background:#eef2f9; border-radius:10px; padding:4px; gap:3px; margin-bottom:22px; }
+    .role-tab {
+      flex:1; border:none; background:transparent; padding:9px 6px; border-radius:8px;
+      font-family:'Inter',sans-serif; font-size:.78rem; font-weight:500; color:#6b84a0;
+      cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:5px;
+    }
+    .role-tab.active { background:#0f2444; color:white; box-shadow:0 2px 8px rgba(15,36,68,.25); }
+    .role-tab:hover:not(.active) { background:#d0daea; color:#0f2444; }
+
+    /* Inputs */
+    .field { margin-bottom:16px; }
+    .field label { display:block; font-size:.73rem; font-weight:600; color:#3a5272; margin-bottom:6px; text-transform:uppercase; letter-spacing:.4px; }
+    .input-wrap { position:relative; }
+    .input-wrap i.ic { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:#9ab0c8; font-size:.95rem; pointer-events:none; }
+    .input-wrap input {
+      width:100%; padding:11px 14px 11px 40px; border:1.5px solid #d0daea; border-radius:8px;
+      font-family:'Inter',sans-serif; font-size:.9rem; color:#0f2444; background:white;
+      outline:none; transition:all .2s;
+    }
+    .input-wrap input:focus { border-color:#2c7be5; box-shadow:0 0 0 3px rgba(44,123,229,.15); }
+    .eye-btn { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:#9ab0c8; cursor:pointer; font-size:.95rem; padding:2px; }
+    .eye-btn:hover { color:#2c7be5; }
+
+    /* Error */
+    .error-box {
+      background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; border-radius:8px;
+      padding:10px 14px; font-size:.83rem; margin-bottom:14px; display:none;
+      align-items:center; gap:8px;
+    }
+
+    /* Submit btn */
+    .submit-btn {
+      width:100%; padding:13px; border:none; border-radius:8px;
+      background:linear-gradient(135deg,#0f2444,#2c7be5); color:white;
+      font-family:'Inter',sans-serif; font-size:.95rem; font-weight:600;
+      cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;
+      margin-top:4px;
+    }
+    .submit-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 24px rgba(30,95,173,.4); }
+    .submit-btn:disabled { opacity:.65; cursor:not-allowed; transform:none; }
+
+    /* Spinner */
+    .spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,.4); border-top-color:white; border-radius:50%; animation:spin .7s linear infinite; display:inline-block; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* Demo box */
+    .demo-box { background:#f7f9fc; border:1px solid #d0daea; border-radius:10px; padding:14px; margin-top:20px; }
+    .demo-box .demo-title { font-size:.72rem; font-weight:600; color:#6b84a0; text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
+    .demo-row { font-size:.8rem; color:#3a5272; line-height:2; }
+    .demo-row strong { color:#0f2444; }
+
+    /* Toast */
+    .toast-wrap { position:fixed; top:18px; right:18px; z-index:999; display:flex; flex-direction:column; gap:8px; }
+    .toast-item {
+      background:white; border-radius:10px; padding:13px 16px; box-shadow:0 8px 24px rgba(0,0,0,.15);
+      border-left:4px solid #2c7be5; font-size:.85rem; color:#0f2444; display:flex; gap:10px;
+      animation:slideIn .3s ease; min-width:260px;
+    }
+    .toast-item.success { border-color:#16a34a; }
+    .toast-item.error   { border-color:#dc2626; }
+    .toast-item i { margin-top:1px; }
+    .toast-item.success i { color:#16a34a; }
+    .toast-item.error   i { color:#dc2626; }
+    @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+
+    @media(max-width:768px) { .left-panel { display:none; } .right-panel { width:100%; } }
+  </style>
+</head>
+<body>
+
+<!-- Left branding panel -->
+<div class="left-panel">
+  <div class="dots"></div>
+  <div class="brand">
+    <div class="brand-logo"><i class="bi bi-mortarboard-fill"></i></div>
+    <h1>Student Result<br>Management System</h1>
+    <p>A unified academic platform for managing results, grades, and performance records.</p>
+    <div class="feature"><i class="bi bi-person-check-fill"></i> Role-based access for Admin, Faculty &amp; Students</div>
+    <div class="feature"><i class="bi bi-graph-up-arrow"></i> Automatic SGPA &amp; CGPA calculation</div>
+    <div class="feature"><i class="bi bi-file-earmark-pdf-fill"></i> Downloadable professional marks cards</div>
+    <div class="feature"><i class="bi bi-cloud-check-fill"></i> Azure cloud-ready architecture</div>
+    <div class="feature"><i class="bi bi-lock-fill"></i> Secure bcrypt + JWT authentication</div>
+  </div>
+</div>
+
+<!-- Right form panel -->
+<div class="right-panel">
+  <div class="form-inner">
+
+    <div class="form-logo"><i class="bi bi-mortarboard-fill"></i></div>
+    <div class="form-title">Sign in to your portal</div>
+    <div class="form-sub">Student Result Management System</div>
+
+    <!-- Role tabs -->
+    <div class="role-tabs" id="role-tabs">
+      <button class="role-tab active" id="tab-student" onclick="setRole('student')">
+        <i class="bi bi-person-fill"></i> Student
+      </button>
+      <button class="role-tab" id="tab-faculty" onclick="setRole('faculty')">
+        <i class="bi bi-person-badge-fill"></i> Faculty
+      </button>
+      <button class="role-tab" id="tab-admin" onclick="setRole('admin')">
+        <i class="bi bi-shield-lock-fill"></i> Admin
+      </button>
+    </div>
+
+    <!-- Error box -->
+    <div class="error-box" id="error-box">
+      <i class="bi bi-exclamation-circle-fill"></i>
+      <span id="error-text">Invalid credentials.</span>
+    </div>
+
+    <!-- Form -->
+    <form id="login-form" onsubmit="doLogin(event)">
+
+      <div class="field">
+        <label id="id-label" for="identifier">Registration Number</label>
+        <div class="input-wrap">
+          <i class="bi bi-person-fill ic" id="id-icon"></i>
+          <input type="text" id="identifier" autocomplete="username"
+                 placeholder="e.g. STU2024001" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <i class="bi bi-lock-fill ic"></i>
+          <input type="password" id="password" autocomplete="current-password"
+                 placeholder="Enter your password" required />
+          <button type="button" class="eye-btn" id="eye-btn" onclick="togglePw()">
+            <i class="bi bi-eye" id="eye-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">
+        <i class="bi bi-box-arrow-in-right"></i> Sign In
+      </button>
+
+    </form>
+
+    <!-- Demo credentials -->
+    <div class="demo-box">
+      <div class="demo-title"><i class="bi bi-info-circle" style="color:#1e5fad;"></i> Demo Credentials</div>
+      <div class="demo-row">
+        <div><strong>Admin &nbsp;&nbsp;&nbsp;</strong> admin / Admin@123</div>
+        <div><strong>Student &nbsp;</strong> STU2024001 / Student@123</div>
+        <div><strong>Faculty &nbsp;</strong> FAC001 / Faculty@123</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+  // ─── State ──────────────────────────────────────────────────────
+  var currentRole = 'student';
+
+  var roleMap = {
+    student: { label: 'Registration Number', placeholder: 'e.g. STU2024001', icon: 'bi-person-fill' },
+    faculty: { label: 'Faculty ID',          placeholder: 'e.g. FAC001',     icon: 'bi-person-badge-fill' },
+    admin:   { label: 'Admin Username',      placeholder: 'e.g. admin',      icon: 'bi-shield-lock-fill' }
+  };
+
+  // ─── Role tab switch ─────────────────────────────────────────────
+  function setRole(role) {
+    currentRole = role;
+    console.log('Role switched to', role);
+
+    // Update tabs
+    document.querySelectorAll('.role-tab').forEach(function(btn) {
+      btn.classList.remove('active');
+    });
+    document.getElementById('tab-' + role).classList.add('active');
+
+    // Update form labels
+    var cfg = roleMap[role];
+    document.getElementById('id-label').textContent = cfg.label;
+    document.getElementById('identifier').placeholder = cfg.placeholder;
+    document.getElementById('id-icon').className = 'bi ' + cfg.icon + ' ic';
+    document.getElementById('identifier').value = '';
+    hideError();
+  }
+
+  // ─── Password toggle ─────────────────────────────────────────────
+  function togglePw() {
+    var pw  = document.getElementById('password');
+    var ico = document.getElementById('eye-icon');
+    if (pw.type === 'password') {
+      pw.type = 'text';
+      ico.className = 'bi bi-eye-slash';
+    } else {
+      pw.type = 'password';
+      ico.className = 'bi bi-eye';
+    }
+  }
+
+  // ─── Error helpers ───────────────────────────────────────────────
+  function showError(msg) {
+    var box = document.getElementById('error-box');
+    document.getElementById('error-text').textContent = msg;
+    box.style.display = 'flex';
+  }
+  function hideError() {
+    document.getElementById('error-box').style.display = 'none';
+  }
+
+  // ─── Toast ───────────────────────────────────────────────────────
+  function toast(msg, type) {
+    var wrap = document.getElementById('toast-wrap');
+    var icons = { success: 'bi-check-circle-fill', error: 'bi-x-circle-fill', info: 'bi-info-circle-fill' };
+    var div = document.createElement('div');
+    div.className = 'toast-item ' + (type || 'info');
+    div.innerHTML = '<i class="bi ' + (icons[type] || icons.info) + '"></i><span>' + msg + '</span>';
+    wrap.appendChild(div);
+    setTimeout(function() { div.remove(); }, 3500);
+  }
+
+  // ─── Login submit ─────────────────────────────────────────────────
+  function doLogin(e) {
+    e.preventDefault();
+    hideError();
+
+    var identifier = document.getElementById('identifier').value.trim();
+    var password   = document.getElementById('password').value;
+
+    if (!identifier || !password) {
+      showError('Please enter your ID and password.');
+      return;
+    }
+
+    var btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Signing in…';
+
+    fetch('/api/auth/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: currentRole, identifier: identifier, password: password })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success) {
+        toast('Login successful! Redirecting…', 'success');
+        var dashMap = {
+          student: '/student-dashboard.html',
+          faculty: '/faculty-dashboard.html',
+          admin:   '/admin-dashboard.html'
+        };
+        setTimeout(function() {
+          window.location.href = dashMap[data.user.role];
+        }, 700);
+      } else {
+        showError(data.message || 'Invalid credentials. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In';
+      }
+    })
+    .catch(function(err) {
+      showError('Cannot connect to server. Make sure the backend is running.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In';
+    });
+  }
+
+  // ─── Auto-redirect if already logged in ───────────────────────────
+  fetch('/api/auth/me', { credentials: 'include' })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success && data.user) {
+        var dashMap = {
+          student: '/student-dashboard.html',
+          faculty: '/faculty-dashboard.html',
+          admin:   '/admin-dashboard.html'
+        };
+        if (dashMap[data.user.role]) {
+          window.location.href = dashMap[data.user.role];
+        }
+      }
+    })
+    .catch(function() { /* not logged in, stay on page */ });
+</script>
+
+</body>
+</html>
