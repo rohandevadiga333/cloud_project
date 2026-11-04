@@ -1,7 +1,7 @@
 // backend/controllers/authController.js
 // Authentication: login, logout, current-user
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const db     = require('../config/db');
 
